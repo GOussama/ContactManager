@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html ng-app="contactApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Liste des Contacts</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,700">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <script src="https://code.angularjs.org/1.6.6/angular.min.js"></script>
+    <script src="contacts.js"></script>
+    <script src="app.js"></script>
+
+  </head>
+  <body>
+
+    <div ng-controller="appCtrl">
+
+      <div id="contacts-list" ng-if="currentView === 'listView'">
+        <h1 class="title">List des Contacts</h1>
+        <label>Search: <input ng-model="searchContact"></label>
+        <div ng-if="contacts.length == 0">
+          <h2 class="notice">You don't have any contact... add a new one !</h2>
+        </div>
+        <div ng-if="contacts.length > 0">
+          <ul ng-repeat="contact in contacts | filter:searchContact track by $index ">
+            <li class="contact-box">
+              <div class="details">
+                <h2>{{contact.lastname +" "+ contact.firstname}}</h2>
+                <p><strong>Firstname :</strong> {{contact.firstname}}</p>
+                <p><strong>Lastname :</strong> {{contact.lastname}}</p>
+                <p><strong>Phone Number :</strong> {{contact.phoneNumber}}</p>
+                <button class="delete" type="button" ng-click="deleteContact($index)">
+                  <i class="fa fa-minus-circle" aria-hidden="true"></i> Delete
+                </button>
+                <button class="default" type="button" ng-click="editContact($index)">Edit</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <button class="submit" type="submit" name="button" ng-click="changeView('createView')">
+          <i class="fa fa-plus-circle" aria-hidden="true"></i> Add new!
+        </button>
+      </div>
+
+      <div id="add-contact" ng-if="currentView === 'createView'">
+        <div class="container">
+          <h1 class="title">Add new contact</h1>
+
+          <form method="post">
+            <h3>Firstname :</h3>
+            <input type="text" placeholder="Firstname" ng-model="$ctrl.contact.firstname.value"/>
+            <h3>Lastname :</h3>
+            <input type="text" placeholder="Lastname" ng-model="$ctrl.contact.lastname.value"/>
+            <h3>PhonNumber :</h3>
+            <input type="type" placeholder="Phone Number" ng-model="$ctrl.contact.phoneNumber.value"/>
+            <div class="buttons">
+              <button class="submit" type="submit" name="button" ng-click="addContact($ctrl.contact)">
+                <i class="fa fa-check-circle" aria-hidden="true"></i> Submit
+              </button>
+              <button class="default" type="button" name="button" ng-click="changeView('listView')">
+                <i class="fa fa-times-circle" aria-hidden="true"></i> Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="edit-contact" ng-if="currentView === 'editView'">
+        <div class="container">
+          <h1 class="title">Edit contact</h1>
+
+          <form method="post">
+
+            <h3>Firstname :</h3>
+            <input type="text" placeholder="{{edit.firstname}}" ng-model="edit.firstname" required="true"/>
+            <h3>Lastname :</h3>
+            <input type="text" placeholder="{{edit.lastname}}" ng-model="edit.lastname" required="true"/>
+            <h3>Phone number :</h3>
+            <input type="text" placeholder="{{edit.phoneNumber}}" ng-model="edit.phoneNumber" required="true"/>
+
+            <div class="buttons">
+              <button class="submit" type="submit" name="button" ng-click="submitEdit(edit, $index)">
+                <i class="fa fa-check-circle" aria-hidden="true"></i> Send
+              </button>
+              <button class="default" type="button" ng-click="changeView('listView')">
+                <i class="fa fa-times-circle" aria-hidden="true"></i> Cancel
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+
+      <div id="delete-contact" ng-if="currentView === 'deleteView'">
+        <div class="container">
+          <h1 class="title">Are you sure ?</h1>
+          <h2>"Ok see you..."</h2>
+          <p class="del-notice">Are you sûr you want to delete {{delete.firstname + " " + delete.lastname}} ?</p>
+          <div class="buttons">
+            <button class="submit" type="submit" name="button" ng-click="submitDelete()">
+              <i class="fa fa-check-circle" aria-hidden="true"></i> Yes
+            </button>
+            <button class="default" type="button" ng-click="changeView('listView')">
+              <i class="fa fa-times-circle" aria-hidden="true"></i> No, I keep {{delete.name}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
